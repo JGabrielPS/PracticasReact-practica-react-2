@@ -1,5 +1,11 @@
+import ListadoNombres from "./components/ListadoNombres";
+
 function App() {
-  return <></>;
+  return (
+    <div className="container">
+      <ListadoNombres />
+    </div>
+  );
 }
 
 export default App;
