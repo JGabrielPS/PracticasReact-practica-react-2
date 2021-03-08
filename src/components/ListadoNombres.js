@@ -6,10 +6,16 @@ const ListadoNombres = () => {
   const [nombre, setNombre] = useState("");
   const [listaNombres, setListaNombre] = useState([]);
   const [modoEdicion, setModoEdicion] = useState(false);
-  const [id, setId] = useState("")
+  const [id, setId] = useState("");
+  const [error, setError] = useState(null);
 
   const addNombre = (e) => {
     e.preventDefault();
+
+    if (nombre.trim() === "") {
+      setError("El campo de nombre no puede estar vacío");
+      return;
+    }
 
     const nuevoNombre = {
       id: uniqid(),
@@ -18,6 +24,7 @@ const ListadoNombres = () => {
 
     setListaNombre([...listaNombres, nuevoNombre]);
     setNombre("");
+    setError(null);
   };
 
   const deleteNombre = (_id) => {
@@ -28,13 +35,17 @@ const ListadoNombres = () => {
   const editMode = (item) => {
     setModoEdicion(true);
     setNombre(item.nombre);
+    setId(item.id);
   };
 
   const editNombre = (e) => {
+    e.preventDefault();
     const nuevaLista = listaNombres.map((item) =>
       item.id === id ? { id, nombre } : item
     );
     setListaNombre(nuevaLista);
+    setModoEdicion(false);
+    setNombre("");
   };
 
   return (
@@ -67,7 +78,10 @@ const ListadoNombres = () => {
         </div>
         <div className="col">
           <h2 className="mb-3">Formulario para añadir nombres</h2>
-          <form className="form-group" onSubmit={addNombre}>
+          <form
+            className="form-group"
+            onSubmit={modoEdicion ? editNombre : addNombre}
+          >
             <input
               type="text"
               className="form-control mb-3"
@@ -80,6 +94,11 @@ const ListadoNombres = () => {
               className="btn btn-info btn-block mb-3"
               value={modoEdicion ? "Editar nombre" : "Crear nombre"}
             />
+            {error !== null ? (
+              <div className="alert alert-danger">{error}</div>
+            ) : (
+              console.log("Nombre ingresado correctamente")
+            )}
           </form>
         </div>
       </div>
